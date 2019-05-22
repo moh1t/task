@@ -1,0 +1,19 @@
+---
+  - hosts: localhosts
+    tasks:
+      - name: Installing lvm2 to create logical Volumes.
+        yum: name="lvm2" state=present
+      - name: Creating physical volume for attached harddisks as xvdf and xvdg ; creating volume group for home and mysql; Creating logical volumes for home and mysql
+        shell: pvcreate /dev/xvdf /dev/xvdg ; vgcreate vg_for_home /dev/xvdf ; vgcreate vg_for_mysql /dev/xvdg; lvcreate --size 4092M --name lv_for_home vg_for_home ; lvcreate --size 4092M --name lv_for_mysql vg_for_mysql 
+      - name: Formatting lvm partitions to xfs format
+        shell: mkfs.xfs /dev/mapper/vg_for_home-lv_for_home ; mkfs.xfs /dev/mapper/vg_for_mysql-lv_for_mysql
+      - name: Mounting lv_for_home to /home with security flag no execution binary 
+        shell: mount -o noexec /dev/mapper/vg_for_home-lv_for_home /home 
+      - name: Mounting lv_for_mysql to /var/lib/mysql
+        shell: mount -o noexec /dev/mapper/vg_for_mysql-lv_for_mysql /var/lib/mysql 
+      - name: Permanent mounting after reboot for home.
+        shell: echo "/dev/mapper/vg_for_home-lv_for_home /home xfs noexec" >> /etc/fstab
+      - name: permanent mounting after reboot for mysql
+        shell: echo "/dev/mapper/vg_for_mysql-lv_for_mysql /var/lib/mysql xfs noexec" >> /etc/fstab
+         
+        
