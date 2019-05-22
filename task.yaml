@@ -16,4 +16,7 @@
       - name: permanent mounting after reboot for mysql
         shell: echo "/dev/mapper/vg_for_mysql-lv_for_mysql /var/lib/mysql xfs noexec" >> /etc/fstab
          
-        
+      - name: disabling SELINUX
+        selinux: state:disabled 
+      - name: changing timezone to Asia/Kolkata
+        timezone: name:Asia/Kolkata 
