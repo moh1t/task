@@ -16,7 +16,10 @@
       - name: permanent mounting after reboot for mysql
         shell: echo "/dev/mapper/vg_for_mysql-lv_for_mysql /var/lib/mysql xfs noexec" >> /etc/fstab
       - name: Disabling SELINUX
-        selinux: state:disable
+        services: name:selinux state:disable
       - name: changing timezone to IST
         timezone: name:Asia/Kolkata         
-        
+      - name: install apache
+        yum: name=apache state=present
+      - name: install php
+        yum: name=php state=present  
