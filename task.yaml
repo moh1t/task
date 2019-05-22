@@ -20,6 +20,13 @@
       - name: changing timezone to IST
         timezone: name:Asia/Kolkata         
       - name: install apache
-        yum: name=apache state=present
+        yum: name=httpd state=present
       - name: install php
-        yum: name=php state=present  
+        yum: name=php state=present
+      - name: adding mariadb to repolist
+        yum-repository: name:mariadb description:MariaDB YUM repo file: external-repos
+        baseurl: http://yum.mariadb.org/10.1/centos7-amd64
+        gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB 
+        gpgcheck: 1
+      - name: installing MariaDB
+        yum: name=mariadb stae=present 
