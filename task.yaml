@@ -16,17 +16,14 @@
       - name: permanent mounting after reboot for mysql
         shell: echo "/dev/mapper/vg_for_mysql-lv_for_mysql /var/lib/mysql xfs noexec" >> /etc/fstab
       - name: Disabling SELINUX
-        services: name:selinux state:disable
+        selinux: state=disable
       - name: changing timezone to IST
-        timezone: name:Asia/Kolkata         
+        timezone: name=Asia/Kolkata         
       - name: install apache
         yum: name=httpd state=present
       - name: install php
         yum: name=php state=present
-      - name: adding mariadb to repolist
-        yum-repository: name:mariadb description:MariaDB YUM repo file: external-repos
-        baseurl: http://yum.mariadb.org/10.1/centos7-amd64
-        gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB 
-        gpgcheck: 1
-      - name: installing MariaDB
-        yum: name=mariadb stae=present 
+     # - name: adding mariadb to repo list
+     #   yum-repository: name=mariadb description=MariaDB YUM repo file=external-repos baseurl=http://yum.mariadb.org/10.1/centos7-amd64 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB gpgcheck=1  
+      - name: installing mariadb
+        yum: name=mariadb state=present
