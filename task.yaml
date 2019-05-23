@@ -15,8 +15,29 @@
         shell: echo "/dev/mapper/vg_for_home-lv_for_home /home xfs noexec" >> /etc/fstab
       - name: permanent mounting after reboot for mysql
         shell: echo "/dev/mapper/vg_for_mysql-lv_for_mysql /var/lib/mysql xfs noexec" >> /etc/fstab
-      - name: Setting up dynamic motd file for server info
-        shell: echo $'#!/bin/bash\necho "###############################################################\n#                 Authorized access only!                     #\n# Disconnect IMMEDIATELY if you are not an authorized user!!! # \n#         All actions Will be monitored and recorded          #\n###############################################################\n+++++++++++++++++++++++++++++++ SERVER INFO ++++++++++++++++++++++++++++++++\n        CPU:`cat /proc/cpuinfo | grep "model name" | cut -d ":" -f2`\n        Memory: `free -ht | grep Mem | cut -d " " -f12`\n        Swap: `free -ht | grep Swap | cut -d " " -f13`\n        Disk: ` df -hT | grep "/dev/xvda1" | cut -d " " -f36`\n        Distro:`cat /etc/redhat-release`with `uname -r` \n        CPU Load: `uptime | cut -d ":" -f5`\n        Free Memory: ` free -ht | grep Mem | cut -d " " -f28`\n        Free Swap: `free -ht | grep Swap | cut -d " " -f33`\n        Free Disk:  `df -hT | grep "/dev/xvda1" | cut -d " " -f40` \n        Public Address: `curl  http://ifconfig.me`\n        Private Address: `ifconfig | grep eth0 -1 | grep inet | cut -d " " -f10`\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"' > /etc/profile.d/dynmotd.sh
+      - name: Creating up dynamic motd file for server info
+        copy: 
+          dest: "/etc/profile.d/dynmotd.sh"
+          content: |
+           '#!/bin/bash
+           echo "###############################################################
+           #                 Authorized access only!                     #
+           # Disconnect IMMEDIATELY if you are not an authorized user!!! # 
+           #         All actions Will be monitored and recorded          #
+           ###############################################################
+          +++++++++++++++++++++++++++++++ SERVER INFO ++++++++++++++++++++++++++++++++
+                  CPU-`cat /proc/cpuinfo | grep "model name" | cut -d ":" -f2`
+                  Memory- `free -ht | grep Mem | cut -d " " -f12`
+                  Swap- `free -ht | grep Swap | cut -d " " -f13`
+                  Disk- ` df -hT | grep "/dev/xvda1" | cut -d " " -f36`
+                  Distro- `cat /etc/redhat-release`with `uname -r` 
+                  CPU Load- `uptime | cut -d ":" -f5`
+                  Free Memory- ` free -ht | grep Mem | cut -d " " -f28`
+                  Free Swap- `free -ht | grep Swap | cut -d " " -f33`
+                  Free Disk-  `df -hT | grep "/dev/xvda1" | cut -d " " -f40` 
+                  Public Address- `curl  http://ifconfig.me`
+                  Private Address- `ifconfig | grep eth0 -1 | grep inet | cut -d " " -f10`
+            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"'
       - name: Disabling SELINUX
         selinux: state=disable
       - name: changing timezone to IST
